@@ -14,9 +14,6 @@
     "lint": "eslint --ext .js,.jsx --ignore-pattern public .",
     "format": "prettier *.js --write"
   },
-  "engines": {
-    "node": "10.x"
-  },
   "lint-staged": {
     "*.{js,css,json,md}": [
       "prettier --write",
