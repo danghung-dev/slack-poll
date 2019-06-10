@@ -32,12 +32,12 @@ function reducePollOptionsString(items, emojis) {
 
 function extractElementsFromSlackText(text) {
   const mode =
-    text.search('-m') >= 0
-      ? constants.pollMode.MULTIPLE
-      : constants.pollMode.SINGLE;
+    text.search('-s') >= 0
+      ? constants.pollMode.SINGLE
+      : constants.pollMode.MULTIPLE;
 
   const rawOptions = text
-    .replace('-m', '')
+    .replace('-s', '')
     .split('"')
     .map(s => s.trim())
     .filter(s => s !== '' && s !== ' ');
@@ -54,7 +54,7 @@ function extractPollData(rawSlaskCommandString) {
   const pollElements = extractElementsFromSlackText(sanitizeText);
 
   const emojis =
-    pollElements.options.length > 10
+    pollElements.options.length > 9
       ? constants.emojis
       : constants.fallbackEmojis;
 
