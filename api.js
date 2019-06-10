@@ -33,7 +33,7 @@ function publishPoll(channelId, messageBody) {
     ...messageBody,
     channel: channelId,
     username: config.SLACK_APP_DISPLAY_NAME,
-    icon_emoji: iconEmojis[Math.floor(Math.random() * iconEmojis.length)],
+    // icon_emoji: iconEmojis[Math.floor(Math.random() * iconEmojis.length)],
   });
 }
 
