@@ -10,7 +10,7 @@ const {
   SLACK_ACCESS_TOKEN,
   NODE_ENV,
   SLACK_APP_DISPLAY_NAME = 'Smartlog Poll',
-  SLACK_MESSAGE_BAR_COLOR = '#ffd100',
+  SLACK_MESSAGE_BAR_COLOR = '#0087b6',
   SLACK_MESSAGE_ICON_EMOJIS = 'smile',
 } = process.env;
 

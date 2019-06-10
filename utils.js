@@ -54,7 +54,7 @@ function extractPollData(rawSlaskCommandString) {
   const pollElements = extractElementsFromSlackText(sanitizeText);
 
   const emojis =
-    pollElements.options.length > 9
+    pollElements.options.length > 10
       ? constants.emojis
       : constants.fallbackEmojis;
 

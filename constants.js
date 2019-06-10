@@ -16,6 +16,7 @@ const fallbackEmojis = [
   'seven',
   'eight',
   'nine',
+  'keycap_ten'
 ];
 
 module.exports = {
