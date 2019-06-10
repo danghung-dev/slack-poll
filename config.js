@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config({ silent: true });
 
 const {
-  PORT = 3000,
+  PORT = 3005,
   SLACK_BASE_URL = 'https://slack.com/api',
   DATABASE_URL,
   SLACK_VERIFICATION_TOKEN,
