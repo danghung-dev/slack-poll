@@ -153,6 +153,17 @@ function buildMessageTemplate(pollAssets) {
   };
 }
 
+// Base on https://api.slack.com/docs/message-formatting
+// Replace the ampersand, &, with &amp;
+// Replace the less-than sign, < with &lt;
+// Replace the greater-than sign, > with &gt;
+function parseEscapeCharacters(actionValue) {
+  let result = actionValue.replace(/&amp;/g, '&');
+  result = result.replace(/&lt;/g, '<');
+  result = result.replace(/&gt;/g, '>');
+  return result;
+}
+
 module.exports = {
   chunkArray,
   replaceAll,
@@ -163,4 +174,5 @@ module.exports = {
   reducePollEnhancedOptionsString,
   stringFromPollMode,
   buildMessageTemplate,
+  parseEscapeCharacters,
 };

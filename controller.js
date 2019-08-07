@@ -108,8 +108,9 @@ async function hookPost(req, res) {
 
   return sequelize.transaction(async transaction => {
     try {
+      const actionValue = utils.parseEscapeCharacters(body.actions[0].value);
       await api.addAnswerToPoll(currentPoll, {
-        answer: body.actions[0].value,
+        answer: actionValue,
         userId: body.user.id,
         username: body.user.name,
       });
