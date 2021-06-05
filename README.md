@@ -45,3 +45,15 @@ Running daemon
 ```sh
 npm run dev
 ```
+## Deploy
+
+```
+# Build docker
+docker build -t danghung/slack-poll .
+docker push danghung/slack-poll
+
+# Deploy
+kubectl apply -f deploy-dev.yml 
+OR
+k rollout restart deployment/slack-poll
+```
