@@ -19,7 +19,7 @@ async function pollPost(req, res) {
 
   const rawSlaskCommandString = req.body.text;
   const pollData = utils.extractPollData(rawSlaskCommandString);
-
+  
   return sequelize.transaction(async transaction => {
     const createdPoll = await Poll.create(
       {
@@ -27,6 +27,7 @@ async function pollPost(req, res) {
         owner: req.body.user_id,
         channel: req.body.channel_id,
         mode: pollData.mode,
+        expiretime: pollData.exptime,
       },
       {
         transaction,
@@ -38,6 +39,7 @@ async function pollPost(req, res) {
         id: createdPoll.id,
         mode: createdPoll.mode,
         title: pollData.title,
+        expiretime: pollData.exptime,
         options: pollData.options,
         optionsString: pollData.optionsString,
         emojis: pollData.emojis,
@@ -94,6 +96,7 @@ async function hookPost(req, res) {
   // https://api.slack.com/docs/interactive-message-field-guide
   if (body.type !== 'interactive_message') return res.status(403).send();
   const currentPollInstance = await Poll.findById(body.callback_id);
+
   const currentPoll = await currentPollInstance.get({ plain: true });
   if (!currentPoll) throw new Error('Unexisting poll!');
 
@@ -104,6 +107,14 @@ async function hookPost(req, res) {
     if (currentPoll.owner !== body.user.id) return res.status(204).send();
     await api.deletePoll(currentPoll);
     return res.status(201).send();
+  }
+
+  const now = Date.now();
+  const exptime = new Date(currentPollInstance.expiretime);
+  // console.log('now: ', now);
+  // console.log('exptime: ', exptime);
+  if (now > exptime) {
+    return res.status(403).send('exp time');
   }
 
   return sequelize.transaction(async transaction => {
@@ -129,6 +140,7 @@ async function hookPost(req, res) {
         id: currentPoll.id,
         mode: currentPoll.mode,
         title: pollData.title,
+        expiretime: pollData.exptime,
         options: pollData.options,
         optionsString: pollOptions,
         emojis: pollData.emojis,

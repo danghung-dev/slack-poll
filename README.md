@@ -57,3 +57,8 @@ kubectl apply -f deploy-dev.yml
 OR
 k rollout restart deployment/slack-poll
 ```
+
+docker build -t danghung/slack-poll:dev .
+docker push danghung/slack-poll:dev
+kubectl patch deployment slack-poll-dev -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}" 
+k rollout restart deployment/slack-poll-dev

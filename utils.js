@@ -35,7 +35,20 @@ function extractElementsFromSlackText(text) {
     text.search('-s') >= 0
       ? constants.pollMode.SINGLE
       : constants.pollMode.MULTIPLE;
-
+  const expIndex = text.search('-exp');
+  // console.log('expINdex: ', expIndex);
+  let exptime = null
+  if (expIndex >= 0) {
+    let i = expIndex + 6;
+    exptime = "";
+    while (i< text.length) {
+      exptime += text[i];
+      i++;
+      if (text[i] == '"') break;
+    }
+    exptime = new Date(exptime)
+    text = text.slice(0, expIndex) + text.slice(i + 1);
+  }
   const rawOptions = text
     .replace('-s', '')
     .split('"')
@@ -44,6 +57,7 @@ function extractElementsFromSlackText(text) {
 
   return {
     mode,
+    exptime,
     question: rawOptions[0],
     options: rawOptions.slice(1),
   };
@@ -52,7 +66,6 @@ function extractElementsFromSlackText(text) {
 function extractPollData(rawSlaskCommandString) {
   const sanitizeText = cleanDoubleQuotes(rawSlaskCommandString);
   const pollElements = extractElementsFromSlackText(sanitizeText);
-
   const emojis =
     pollElements.options.length > 10
       ? constants.emojis
@@ -60,9 +73,11 @@ function extractPollData(rawSlaskCommandString) {
 
   const title = `${pollElements.question}\n\n`;
   const optionsString = reducePollOptionsString(pollElements, emojis);
-
+  // console.log('pollData: ', { emojis, title, optionsString, ...pollElements })
   return { emojis, title, optionsString, ...pollElements };
 }
+
+ const aa = extractPollData(`"What do you like?" "Orange" "Grapefruit" -exp="2020-12-12 23:00"`);
 
 // Enhance polloptions with user answers
 function reducePollEnhancedOptionsString(items, currentPollAnswers, emojis) {
@@ -92,6 +107,16 @@ function stringFromPollMode(pollModeId) {
 
 // Base message template from https://api.slack.com/docs/message-formatting
 function buildMessageTemplate(pollAssets) {
+  let footer;
+  if (pollAssets.expiretime) {
+    footer = `By: <@${pollAssets.owner}>, Mode: ${stringFromPollMode(
+      pollAssets.mode
+    )}, Time: ${pollAssets.expiretime}`;
+  } else {
+    footer = `By: <@${pollAssets.owner}>, Mode: ${stringFromPollMode(
+      pollAssets.mode
+    )}`;
+  }
   return {
     attachments: [
       {
@@ -100,9 +125,7 @@ function buildMessageTemplate(pollAssets) {
         callback_id: pollAssets.id,
         color: config.SLACK_MESSAGE_BAR_COLOR,
         attachment_type: 'default',
-        footer: `By: <@${pollAssets.owner}>, Mode: ${stringFromPollMode(
-          pollAssets.mode
-        )}`,
+        footer,
       },
       {
         fallback: pollAssets.optionsString,

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slack-poll-dev
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slack-poll-dev
+  template:
+    metadata:
+      labels:
+        app: slack-poll-dev
+    spec:
+      containers:
+        - name: slack-poll-dev
+          image: danghung/slack-poll:dev
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack-poll-dev
+                  key: DATABASE_URL
+            - name: SLACK_VERIFICATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack-poll-dev
+                  key: SLACK_VERIFICATION_TOKEN
+            - name: SLACK_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack-poll-dev
+                  key: SLACK_ACCESS_TOKEN    
+            - name: TZ
+              value: "Asia/Saigon"                                
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "1Mi"
+              cpu: "1m"
+            limits:
+              memory: "8Gi"
+              cpu: "4000m"
+          ports:
+            - containerPort: 3000
+

@@ -17,6 +17,7 @@ const PollModel = sequelize.define(
     owner: { type: Sequelize.STRING },
     channel: { type: Sequelize.STRING },
     titleTs: { type: Sequelize.STRING },
+    expiretime: { type: Sequelize.TIME },
     mode: {
       defaultValue: constants.pollMode.SINGLE,
       type: Sequelize.ENUM(
